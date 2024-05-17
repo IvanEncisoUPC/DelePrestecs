@@ -1,25 +1,35 @@
-# DelePrestecs Alpha 0.7
+# Deleprestecs Alpha 0.7
 
-This is a Python application using the tkinter library for the GUI. It's designed to manage loans of various materials.
+![Logo del Proyecto](img/deleprestecs.png)
 
-## Features
+## Descripción
 
-- The application uses a custom tkinter library for the GUI.
-- The application supports a light theme with a blue color scheme.
-- The application manages loans of various materials such as lab coats, glasses, and calculators.
-- The application supports loading and saving data.
-- The application uses images for various UI elements.
+Este proyecto es una aplicación diseñada para gestionar el préstamo de materiales y equipos en la delegación de estudiantes de ESEIAAT, La aplicación permite registrar, controlar y monitorear los préstamos de manera eficiente y sencilla.
 
-## Dependencies
+## Características
 
-- Python 3
-- tkinter
-- customtkinter
-- PIL (Python Imaging Library)
-- json
-- datetime
+- Añadir nuevos préstamos
+- Calcular intereses
+- Rastrear pagos de préstamos
+- Generar informes de préstamos
 
-## Setup
+## Comenzando
 
-1. Ensure you have Python 3 installed.
-2. Install the required Python libraries using pip:
+Para comenzar con el script `prestamos.py`, sigue estos pasos:
+
+1. Clona el repositorio: `git clone https://github.com/IvanEncisoUPC/DelePrestecs.git`
+2. Instala las dependencias requeridas: `pip install -r requirements.txt`
+3. Ejecuta el script: `python prestamos.py`
+
+## Uso
+
+El script `prestamos.py` proporciona una interfaz de usuario grafica con un menu segmentado en tres partes referentes a las tres ramas de la s
+
+
+## Contribuyendo
+
+¡Las contribuciones son bienvenidas! Si encuentras algún problema o tienes sugerencias para mejoras, por favor abre un issue o envía un pull request.
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
