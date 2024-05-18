@@ -25,7 +25,7 @@ class App(customtkinter.CTk):
         # Cargamos los datos
         self.usuarios = {}
         self.materiales = {}
-        self.prestamos = {}
+        self.prestecs = {}
 
         self.cargar_datos()
 
@@ -196,13 +196,8 @@ class App(customtkinter.CTk):
         treeview.column("F", width=100)
 
         # Agregar algunos datos
-        data = [
-            ("Bata1", "12/1/1999", "Jorge", "Nitales", "12345678A", "123456789"),
-            ("Calculadora1", "8/7/2054", "Antonio","Machado", "12345678B", "123456789"),
-            ("Ulleres1", "24/3/2003", "Xavi", "Roca" , "12345678C", "123456789")
-        ]
-
-        for item in data:
+        
+        for item in self.prestecs:
             treeview.insert("", tk.END, values=item)
 
     def prestecs_frame_retornament_button_event(slef):
