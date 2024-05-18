@@ -23,11 +23,9 @@ class App(customtkinter.CTk):
         self.resizable(False, False) # Width, Height
 
         # Cargamos los datos
-        self.usuarios = {}
+        self.usuarios = self.cargar_usuarios()
         self.materiales = {}
         self.prestecs = {}
-
-        self.cargar_datos()
 
         # Creamos un grid 1x2
         self.grid_rowconfigure(0, weight=1)
@@ -109,11 +107,11 @@ class App(customtkinter.CTk):
 
         self.materials_frame_img = customtkinter.CTkLabel(self.materials_frame, text="", image=self.deleprestecs_img)
         self.materials_frame_img.grid(row=0, column=0, padx=20, pady=10)
-        self.materials_frame_material_list_button = customtkinter.CTkButton(self.materials_frame, text="Llista de materials",height=50, width=250, font = ("Helvetica", 24))
+        self.materials_frame_material_list_button = customtkinter.CTkButton(self.materials_frame, text="Llista de materials",height=50, width=250, font = ("Helvetica", 24), command=self.materials_frame_material_list_button_event)
         self.materials_frame_material_list_button.grid(row=1, column=0, padx=20, pady=10)
-        self.materials_frame_material_new_button = customtkinter.CTkButton(self.materials_frame, text="Afegir material",height=50, width=250, font = ("Helvetica", 24))
+        self.materials_frame_material_new_button = customtkinter.CTkButton(self.materials_frame, text="Afegir material",height=50, width=250, font = ("Helvetica", 24), command=self.materials_frame_material_new_button_event)
         self.materials_frame_material_new_button.grid(row=2, column=0, padx=20, pady=10)
-        self.materials_frame_material_delete_button = customtkinter.CTkButton(self.materials_frame, text="Eliminar material",height=50, width=250, font = ("Helvetica", 24))
+        self.materials_frame_material_delete_button = customtkinter.CTkButton(self.materials_frame, text="Eliminar material",height=50, width=250, font = ("Helvetica", 24), command=self.materials_frame_material_delete_button_event)
         self.materials_frame_material_delete_button.grid(row=3, column=0, padx=20, pady=10)
 
 
@@ -123,11 +121,11 @@ class App(customtkinter.CTk):
 
         self.usuaris_frame_img = customtkinter.CTkLabel(self.usuaris_frame, text="", image=self.deleprestecs_img)
         self.usuaris_frame_img.grid(row=0, column=0, padx=20, pady=10)
-        self.usuaris_frame_user_list_button = customtkinter.CTkButton(self.usuaris_frame, text="Llista de usuaris",height=50, width=250, font = ("Helvetica", 24))
+        self.usuaris_frame_user_list_button = customtkinter.CTkButton(self.usuaris_frame, text="Llista de usuaris",height=50, width=250, font = ("Helvetica", 24), command=self.usuaris_frame_user_list_button_event)
         self.usuaris_frame_user_list_button.grid(row=1, column=0, padx=20, pady=10)
-        self.usuaris_frame_user_new_button = customtkinter.CTkButton(self.usuaris_frame, text="Usuari nou",height=50, width=250, font = ("Helvetica", 24))
+        self.usuaris_frame_user_new_button = customtkinter.CTkButton(self.usuaris_frame, text="Usuari nou",height=50, width=250, font = ("Helvetica", 24), command=self.usuaris_frame_user_new_button_event)
         self.usuaris_frame_user_new_button.grid(row=2, column=0, padx=20, pady=10)
-        self.usuaris_frame_user_delete_button = customtkinter.CTkButton(self.usuaris_frame, text="Esborrar usuari",height=50, width=250, font = ("Helvetica", 24))
+        self.usuaris_frame_user_delete_button = customtkinter.CTkButton(self.usuaris_frame, text="Esborrar usuari",height=50, width=250, font = ("Helvetica", 24), command=self.usuaris_frame_user_delete_button_event)
         self.usuaris_frame_user_delete_button.grid(row=3, column=0, padx=20, pady=10)
 
         # Seleccionamos el frame de inicio
@@ -236,33 +234,58 @@ class App(customtkinter.CTk):
         tancar_button = customtkinter.CTkButton(finestra_prestec, text="Tancar", command=tancar)
         tancar_button.pack(pady=10)
 
-    def cargar_datos(self):
-        """Carga los datos de los archivos de texto al iniciar el programa."""
-        if os.path.exists("data/usuarios.txt"):
-            with open("data/usuarios.txt", "r") as file:
-                self.usuarios = json.load(file)
+    # Botones de materiales
+    def materials_frame_material_list_button_event(self):
+        print ("Lista de materiales")
+    def materials_frame_material_new_button_event(self):
+        print ("Nuevo material")
+    def materials_frame_material_delete_button_event(self):
+        print ("Eliminar material")
 
-        if os.path.exists("data/materiales.txt"):
-            with open("data/materiales.txt", "r") as file:
-                self.materiales = json.load(file)
+    # Botones de usuarios
+    def usuaris_frame_user_list_button_event(self):
+        # Crear una nueva ventana Toplevel
+        top = customtkinter.CTkToplevel(self)
+        top.title("Llista de usuaris")
+        top.geometry("800x600")
+        top.iconbitmap('img/dele.ico')
 
-        if os.path.exists("data/prestamos.txt"):
-            with open("data/prestamos.txt", "r") as file:
-                self.prestamos = json.load(file)
+        # Crear un frame de CustomTkinter dentro del Toplevel
+        frame = customtkinter.CTkFrame(top, corner_radius=10)
+        frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-    def guardar_datos(self):
-        """Guarda los datos en archivos de texto al cerrar el programa."""
-        with open("usuarios.txt", "w") as file:
-            json.dump(self.usuarios, file)
+        # Crear un Treeview dentro del frame
+        treeview = ttk.Treeview(frame, columns=("Nombre", "Apellido", "DNI", "Correo", "Telefono"), show="headings", height=10)
+        treeview.pack(pady=20, padx=20, fill="both", expand=True)
 
-        with open("materiales.txt", "w") as file:
-            json.dump(self.materiales, file)
+        # Definir los encabezados de columna
+        treeview.heading("Nombre", text="Nombre")
+        treeview.heading("Apellido", text="Apellido")
+        treeview.heading("DNI", text="DNI")
+        treeview.heading("Correo", text="Correo Electrónico")
+        treeview.heading("Telefono", text="Teléfono")
 
-        with open("prestamos.txt", "w") as file:
-            json.dump(self.prestamos, file)
+        # Definir el tamaño de las columnas
+        treeview.column("Nombre", width=150)
+        treeview.column("Apellido", width=150)
+        treeview.column("DNI", width=100)
+        treeview.column("Correo", width=200)
+        treeview.column("Telefono", width=100)
 
-        # Cerrar la ventana después de guardar los datos
-        self.root.destroy()
+        # Agregar los datos de los usuarios al Treeview
+        for usuario in self.usuarios:
+            treeview.insert("", tk.END, values=(usuario["Nombre"], usuario["Apellido"], usuario["DNI"], usuario["Correo"], usuario["Telefono"]))
+    def usuaris_frame_user_new_button_event(self):
+        print ("Nuevo usuario")
+    def usuaris_frame_user_delete_button_event(self):
+        print ("Eliminar usuario")
+
+    def cargar_usuarios(self):
+        if not os.path.exists("data/usuarios.txt"):
+            return
+        with open ("data/usuarios.txt", "r", encoding="utf-8") as file:
+            usuarios = json.load(file)
+        return usuarios       
 
 if __name__ == "__main__":
     app = App()
