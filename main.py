@@ -162,6 +162,7 @@ class App(customtkinter.CTk):
     def usuaris_button_event(self):
         self.select_frame_by_name("usuaris")
 
+    # Funciones de prestamos
     def prestecs_frame_prestecs_list_button_event(self):
         # Crear una nueva ventana Toplevel
         top = customtkinter.CTkToplevel(self)
@@ -275,8 +276,34 @@ class App(customtkinter.CTk):
         # Agregar los datos de los usuarios al Treeview
         for usuario in self.usuarios:
             treeview.insert("", tk.END, values=(usuario["Nombre"], usuario["Apellido"], usuario["DNI"], usuario["Correo"], usuario["Telefono"]))
+    
     def usuaris_frame_user_new_button_event(self):
-        print ("Nuevo usuario")
+        # Crear una nueva ventana Toplevel
+        top = customtkinter.CTkToplevel(self)
+        top.title("Nuevo usuario")
+        top.geometry("250x300")
+        top.iconbitmap('img/dele.ico')
+
+        # Funciones
+        def agregar_usuario():
+            print("Nuevo usuario")
+
+        # Creamos las entradas de datos
+        nombre_entry = customtkinter.CTkEntry(top, placeholder_text="Nombre")
+        nombre_entry.pack(pady=10)
+        apellido_entry = customtkinter.CTkEntry(top, placeholder_text="Apellido")
+        apellido_entry.pack(pady=10)
+        dni_entry = customtkinter.CTkEntry(top, placeholder_text="DNI")
+        dni_entry.pack(pady=10)
+        correo_entry = customtkinter.CTkEntry(top, placeholder_text="Correo Electrónico")
+        correo_entry.pack(pady=10)
+        telefono_entry = customtkinter.CTkEntry(top, placeholder_text="Teléfono")
+        telefono_entry.pack(pady=10)
+
+        # Creamos el boton para enviar los datos
+        boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_usuario)
+        boton_agregar.pack(pady=10)
+        
     def usuaris_frame_user_delete_button_event(self):
         print ("Eliminar usuario")
 
