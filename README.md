@@ -13,6 +13,10 @@ Este proyecto es una aplicación diseñada para gestionar el préstamo de materi
 - Rastrear pagos de préstamos
 - Generar informes de préstamos
 
+# Releases
+
+Puedes encontrar las releases en el apartado [Releases](https://github.com/IvanEncisoUPC/DelePrestecs/releases)
+
 ## Comenzando
 
 Para comenzar con el script `prestamos.py`, sigue estos pasos:

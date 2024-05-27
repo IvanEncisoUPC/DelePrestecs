@@ -1,2 +1,2 @@
-Pillow>=8.0.0
-requests>=2.0.0
+Pillow>=8.4.0
+custmtkinter>=5.2.2
