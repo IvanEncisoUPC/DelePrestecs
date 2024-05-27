@@ -266,7 +266,7 @@ class App(customtkinter.CTk):
         treeview.heading("Correo", text="Correo Electrónico")
         treeview.heading("Telefono", text="Teléfono")
 
-        # Definir el tamaño de las columnas
+        # Definir el tamaño de las columnas/
         treeview.column("Nombre", width=150)
         treeview.column("Apellido", width=150)
         treeview.column("DNI", width=100)
@@ -308,9 +308,9 @@ class App(customtkinter.CTk):
         print ("Eliminar usuario")
 
     def cargar_usuarios(self):
-        if not os.path.exists("data/usuarios.txt"):
+        if not os.path.exists("data/usuarios.json"):
             return
-        with open ("data/usuarios.txt", "r", encoding="utf-8") as file:
+        with open ("data/usuarios.json", "r", encoding="utf-8") as file:
             usuarios = json.load(file)
         return usuarios       
 
