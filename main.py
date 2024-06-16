@@ -25,7 +25,7 @@ class App(customtkinter.CTk):
         # Cargamos los datos
         self.usuarios = self.cargar_usuarios()
         self.materiales = self.cargar_materiales()
-        self.prestecs = {}
+        self.prestecs = self.cargar_prestamos()
 
         # Creamos un grid 1x2
         self.grid_rowconfigure(0, weight=1)
@@ -193,10 +193,10 @@ class App(customtkinter.CTk):
         # Definir el tamaño de las columnas
         treeview.column("A", width=100)
         treeview.column("B", width=100)
-        treeview.column("C", width=100)
-        treeview.column("D", width=100)
-        treeview.column("E", width=100)
-        treeview.column("F", width=100)
+        treeview.column("C", width=50)
+        treeview.column("D", width=50)
+        treeview.column("E", width=50)
+        treeview.column("F", width=150)
         treeview.column("G", width=100)
         treeview.column("H", width=100)
         treeview.column("I", width=100)
@@ -205,7 +205,7 @@ class App(customtkinter.CTk):
         # Agregar algunos datos
         
         for item in self.prestecs:
-            treeview.insert("", tk.END, values=item)
+            treeview.insert("", tk.END, values=(item["Data Prestec"], item["Data Retornament"], item["Nom"], item["Cognom"], item["DNI"], item["Correu Electrònic"], item["Telefon"], item["Tipo"], item["ID"], item["Estado"]))
 
     def prestecs_frame_retornament_button_event(slef):
         dialog = customtkinter.CTkInputDialog(text="Introdueix ID del material a retornar", title="Retornament de material")
