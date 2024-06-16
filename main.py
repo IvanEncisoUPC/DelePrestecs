@@ -215,6 +215,7 @@ class App(customtkinter.CTk):
 
         def retornar():
             ID = ID_entry.get()
+            # estat = estado_entrada.get()
             trobat, prestec = self.buscar_prestamo_por_id(ID)
             if not trobat:
                 messagebox.showerror("Error", f"No existeix cap préstec per al material amb l'ID '{ID}'.")
@@ -227,6 +228,9 @@ class App(customtkinter.CTk):
         
         ID_entry = customtkinter.CTkEntry(top, placeholder_text="ID")
         ID_entry.pack(pady=10)
+
+        # estado_entrada = customtkinter.CTkEntry(top, placeholder_text="Estat")
+        # estado_entrada.pack(pady=10)
 
         retornar_button = customtkinter.CTkButton(top, text="Retornar", command=retornar)
         retornar_button.pack(pady=10)
@@ -244,7 +248,6 @@ class App(customtkinter.CTk):
         def enviar():
             dni = dni_entrada.get()
             material_id = material_entrada.get()
-            estat = estado_entrada.get()
 
             # Comprobar si el usuario existe
             usuario = next((u for u in self.usuarios if u['DNI'] == dni), None)
@@ -279,7 +282,7 @@ class App(customtkinter.CTk):
                 "Telefon": usuario["Telefono"],
                 "Tipo": material["Tipo"],
                 "ID": material["ID"],
-                "Estado": estat
+                "Estado": material["Estado"]
             }
 
             self.prestecs.append(nuevo_prestamo)
@@ -293,9 +296,6 @@ class App(customtkinter.CTk):
     
         material_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="ID del material")
         material_entrada.pack(pady=10) 
-
-        estado_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="Estat")
-        estado_entrada.pack(pady=10)
 
         okay_button = customtkinter.CTkButton(finestra_prestec, text="OK", command=enviar)
         okay_button.pack(pady=10)
@@ -350,7 +350,6 @@ class App(customtkinter.CTk):
             tipo = tipo_entry.get()
             ID = ID_entry.get()
             estado = estado_entry.get()
-            disponibilidad = disponibilidad_entry.get()
 
             trobat, _ = self.buscar_material_por_id(ID)
             if trobat:
@@ -361,7 +360,6 @@ class App(customtkinter.CTk):
                 "Tipo": tipo,
                 "ID": ID,
                 "Estado": estado,
-                "Disponibilidad": disponibilidad,
             }
             
             self.materiales.append(nuevo_material)
@@ -376,8 +374,6 @@ class App(customtkinter.CTk):
         ID_entry.pack(pady=10)
         estado_entry = customtkinter.CTkEntry(top, placeholder_text="Estado")
         estado_entry.pack(pady=10)
-        disponibilidad_entry = customtkinter.CTkEntry(top, placeholder_text="Disponibilidad")
-        disponibilidad_entry.pack(pady=10)
 
         boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_material)
         boton_agregar.pack(pady=10)
@@ -511,9 +507,11 @@ class App(customtkinter.CTk):
 
     # Funciones de carga y guardado de datos
     def cargar_prestamos(self):
-        if not os.path.exists("data/prestamos.json"):
-            return
-        with open ("data/prestamos.json", "r", encoding="utf-8") as prestamoFile:
+        archivo = "data/prestamos.json"
+        if not os.path.exists(archivo):
+            with open(archivo, 'w', encoding="utf-8") as prestamoFile:
+                json.dump([], prestamoFile, indent=4)
+        with open(archivo, 'r', encoding="utf-8") as prestamoFile:
             prestamos = json.load(prestamoFile)
         return prestamos
     
@@ -528,9 +526,11 @@ class App(customtkinter.CTk):
             json.dump(self.prestecs, prestamoFile, indent=4)
     
     def cargar_usuarios(self):
-        if not os.path.exists("data/usuarios.json"):
-            return
-        with open ("data/usuarios.json", "r", encoding="utf-8") as userFile:
+        archivo = "data/usuarios.json"
+        if not os.path.exists(archivo):
+            with open(archivo, 'w', encoding="utf-8") as userFile:
+                json.dump([], userFile, indent=4)
+        with open(archivo, 'r', encoding="utf-8") as userFile:
             usuarios = json.load(userFile)
         return usuarios 
     
@@ -545,9 +545,11 @@ class App(customtkinter.CTk):
             json.dump(self.usuarios, userFile, indent=4)
     
     def cargar_materiales(self):
-        if not os.path.exists("data/materiales.json"):
-            return
-        with open ("data/materiales.json", "r", encoding="utf-8") as materialFile:
+        archivo = "data/materiales.json"
+        if not os.path.exists(archivo):
+            with open(archivo, 'w', encoding="utf-8") as materialFile:
+                json.dump([], materialFile, indent=4)
+        with open(archivo, 'r', encoding="utf-8") as materialFile:
             materiales = json.load(materialFile)
         return materiales
     
