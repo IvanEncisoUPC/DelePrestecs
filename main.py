@@ -278,17 +278,35 @@ class App(customtkinter.CTk):
             treeview.insert("", tk.END, values=(usuario["Nombre"], usuario["Apellido"], usuario["DNI"], usuario["Correo"], usuario["Telefono"]))
     
     def usuaris_frame_user_new_button_event(self):
-        # Crear una nueva ventana Toplevel
         top = customtkinter.CTkToplevel(self)
         top.title("Nuevo usuario")
         top.geometry("250x300")
         top.iconbitmap('img/dele.ico')
 
-        # Funciones
         def agregar_usuario():
-            print("Nuevo usuario")
+            nombre = nombre_entry.get()
+            apellido = apellido_entry.get()
+            dni = dni_entry.get()
+            correo = correo_entry.get()
+            telefono = telefono_entry.get()
 
-        # Creamos las entradas de datos
+            trobat, _ = self.buscar_usuario_por_dni(dni)
+            if trobat:
+                messagebox.showerror("Error", "El DNI ya existe.")
+                return
+
+            nuevo_usuario = {
+                "Nombre": nombre,
+                "Apellido": apellido,
+                "DNI": dni,
+                "Correo": correo,
+                "Telefono": telefono
+            }
+            self.usuarios.append(nuevo_usuario)
+            # guardar_usuarios(self.usuarios)
+            messagebox.showinfo("Éxito", "Usuario agregado con éxito.")
+            top.destroy()
+
         nombre_entry = customtkinter.CTkEntry(top, placeholder_text="Nombre")
         nombre_entry.pack(pady=10)
         apellido_entry = customtkinter.CTkEntry(top, placeholder_text="Apellido")
@@ -300,19 +318,46 @@ class App(customtkinter.CTk):
         telefono_entry = customtkinter.CTkEntry(top, placeholder_text="Teléfono")
         telefono_entry.pack(pady=10)
 
-        # Creamos el boton para enviar los datos
         boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_usuario)
         boton_agregar.pack(pady=10)
+
         
     def usuaris_frame_user_delete_button_event(self):
-        print ("Eliminar usuario")
+        top = customtkinter.CTkToplevel(self)
+        top.title("Eliminar usuario")
+        top.geometry("250x150")
+        top.iconbitmap('img/dele.ico')
+
+        def eliminar_usuario():
+            dni = dni_entry.get()
+            trobat, usuario = self.buscar_usuario_por_dni(dni)
+            if not trobat:
+                messagebox.showerror("Error", "El usuario no existe.")
+                return
+
+            self.usuarios.remove(usuario)
+            # guardar_usuarios(self.usuarios)
+            messagebox.showinfo("Éxito", "Usuario eliminado con éxito.")
+            top.destroy()
+
+        dni_entry = customtkinter.CTkEntry(top, placeholder_text="DNI")
+        dni_entry.pack(pady=10)
+
+        boton_eliminar = customtkinter.CTkButton(top, text="Eliminar", command=eliminar_usuario)
+        boton_eliminar.pack(pady=10)
 
     def cargar_usuarios(self):
         if not os.path.exists("data/usuarios.json"):
             return
         with open ("data/usuarios.json", "r", encoding="utf-8") as file:
             usuarios = json.load(file)
-        return usuarios       
+        return usuarios 
+    
+    def buscar_usuario_por_dni(self, dni):
+        for usuario in self.usuarios:
+            if usuario["DNI"] == dni:
+                return True, usuario
+        return False, None
 
 if __name__ == "__main__":
     app = App()
