@@ -1,0 +1,41 @@
+[
+    {
+      "Data Prestec": "2024-06-16",
+      "Data Retornament": "2024-06-23",
+      "Nom": "Juan",
+      "Cognom": "Pérez",
+      "DNI": "12345678A",
+      "Correu Electrònic": "juan.perez@example.com",
+      "Telefon": "123456789",
+      "Tipo": "Bata",
+      "ID": "bata01",
+      "Estado": "Excelente"
+    },
+    {
+      "Data Prestec": "2024-06-16",
+      "Data Retornament": "2024-06-23",
+      "Nom": "María",
+      "Cognom": "López",
+      "DNI": "23456789B",
+      "Correu Electrònic": "maria.lopez@example.com",
+      "Telefon": "987654321",
+      "Tipo": "Gafas",
+      "ID": "gafas03",
+      "Estado": "Mediocre"
+    },
+    {
+      "Data Prestec": "2024-06-16",
+      "Data Retornament": "2024-06-23",
+      "Nom": "Pedro",
+      "Cognom": "Gómez",
+      "DNI": "34567890C",
+      "Correu Electrònic": "pedro.gomez@example.com",
+      "Telefon": "456789123",
+      "Tipo": "Calculadora",
+      "ID": "calculadora04",
+      "Estado": "Bueno"
+    }
+  ]
+  
+  
+  

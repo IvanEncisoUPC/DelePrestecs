@@ -167,7 +167,7 @@ class App(customtkinter.CTk):
         # Crear una nueva ventana Toplevel
         top = customtkinter.CTkToplevel(self)
         top.title("Llista de prestecs")
-        top.geometry("800x600")
+        top.geometry("1200x600")
         top.iconbitmap('img/dele.ico')
 
         # Crear un frame de CustomTkinter dentro del Toplevel
@@ -175,16 +175,20 @@ class App(customtkinter.CTk):
         frame.pack(pady=20, padx=20, fill="both", expand=True)
 
         # Crear un Treeview dentro del frame
-        treeview = ttk.Treeview(frame, columns=("A", "B", "C", "D", "E", "F"), show="headings", height=10)
+        treeview = ttk.Treeview(frame, columns=("A", "B", "C", "D", "E", "F", "G", "H", "I", "J"), show="headings", height=10)
         treeview.pack(pady=20, padx=20, fill="both", expand=True)
 
         # Definir los encabezados de columna
-        treeview.heading("A", text="Material")
-        treeview.heading("B", text="Data")
+        treeview.heading("A", text="Data Prestec")
+        treeview.heading("B", text="Data Retornament")
         treeview.heading("C", text="Nom")
         treeview.heading("D", text="Cognom")
         treeview.heading("E", text="DNI")
-        treeview.heading("F", text="Telefon")
+        treeview.heading("F", text="Correu")
+        treeview.heading("G", text="Telèfon")
+        treeview.heading("H", text="Material")
+        treeview.heading("I", text="ID")
+        treeview.heading("J", text="Estat")
 
         # Definir el tamaño de las columnas
         treeview.column("A", width=100)
@@ -193,6 +197,10 @@ class App(customtkinter.CTk):
         treeview.column("D", width=100)
         treeview.column("E", width=100)
         treeview.column("F", width=100)
+        treeview.column("G", width=100)
+        treeview.column("H", width=100)
+        treeview.column("I", width=100)
+        treeview.column("J", width=100)
 
         # Agregar algunos datos
         
@@ -200,7 +208,7 @@ class App(customtkinter.CTk):
             treeview.insert("", tk.END, values=item)
 
     def prestecs_frame_retornament_button_event(slef):
-        dialog = customtkinter.CTkInputDialog(text="Introduce DNI del usuario", title="Retornament de material")
+        dialog = customtkinter.CTkInputDialog(text="Introdueix ID del material a retornar", title="Retornament de material")
     
     def prestecs_frame_prestec_button_event(self):
         finestra_prestec = customtkinter.CTkToplevel(self)
@@ -266,7 +274,6 @@ class App(customtkinter.CTk):
         # Agregar los datos de los usuarios al Treeview
         for material in self.materiales:
             treeview.insert("", tk.END, values=(material["Tipo"], material["ID"], material["Estado"], material["Disponibilidad"]))
-      
     def materials_frame_material_new_button_event(self):
         top = customtkinter.CTkToplevel(self)
         top.title("Nuevo material")
@@ -308,7 +315,6 @@ class App(customtkinter.CTk):
 
         boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_material)
         boton_agregar.pack(pady=10)
-        
     def materials_frame_material_delete_button_event(self):
         top = customtkinter.CTkToplevel(self)
         top.title("Eliminar material")
@@ -351,11 +357,11 @@ class App(customtkinter.CTk):
         treeview.pack(pady=20, padx=20, fill="both", expand=True)
 
         # Definir los encabezados de columna
-        treeview.heading("Nombre", text="Nombre")
-        treeview.heading("Apellido", text="Apellido")
+        treeview.heading("Nombre", text="Nom")
+        treeview.heading("Apellido", text="Cognom")
         treeview.heading("DNI", text="DNI")
-        treeview.heading("Correo", text="Correo Electrónico")
-        treeview.heading("Telefono", text="Teléfono")
+        treeview.heading("Correo", text="Correu Electrònic")
+        treeview.heading("Telefono", text="Telèfon")
 
         # Definir el tamaño de las columnas/
         treeview.column("Nombre", width=150)
@@ -367,10 +373,9 @@ class App(customtkinter.CTk):
         # Agregar los datos de los usuarios al Treeview
         for usuario in self.usuarios:
             treeview.insert("", tk.END, values=(usuario["Nombre"], usuario["Apellido"], usuario["DNI"], usuario["Correo"], usuario["Telefono"]))
-    
     def usuaris_frame_user_new_button_event(self):
         top = customtkinter.CTkToplevel(self)
-        top.title("Nuevo usuario")
+        top.title("Nou usuari")
         top.geometry("250x300")
         top.iconbitmap('img/dele.ico')
 
@@ -383,7 +388,7 @@ class App(customtkinter.CTk):
 
             trobat, _ = self.buscar_usuario_por_dni(dni)
             if trobat:
-                messagebox.showerror("Error", "El DNI ya existe.")
+                messagebox.showerror("Error", "Usuari amb aquest DNI ja existeix.")
                 return
 
             nuevo_usuario = {
@@ -395,29 +400,27 @@ class App(customtkinter.CTk):
             }
             self.usuarios.append(nuevo_usuario)
             # guardar_usuarios(self.usuarios)
-            messagebox.showinfo("Éxito", "Usuario agregado con éxito.")
+            messagebox.showinfo("Èxit", "Usuari afegit amb èxit.")
             self.guardar_usuarios()
             top.destroy()
 
-        nombre_entry = customtkinter.CTkEntry(top, placeholder_text="Nombre")
+        nombre_entry = customtkinter.CTkEntry(top, placeholder_text="Nom")
         nombre_entry.pack(pady=10)
-        apellido_entry = customtkinter.CTkEntry(top, placeholder_text="Apellido")
+        apellido_entry = customtkinter.CTkEntry(top, placeholder_text="Cognom")
         apellido_entry.pack(pady=10)
         dni_entry = customtkinter.CTkEntry(top, placeholder_text="DNI")
         dni_entry.pack(pady=10)
-        correo_entry = customtkinter.CTkEntry(top, placeholder_text="Correo Electrónico")
+        correo_entry = customtkinter.CTkEntry(top, placeholder_text="Correu Electrònic")
         correo_entry.pack(pady=10)
-        telefono_entry = customtkinter.CTkEntry(top, placeholder_text="Teléfono")
+        telefono_entry = customtkinter.CTkEntry(top, placeholder_text="Telèfon")
         telefono_entry.pack(pady=10)
 
         boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_usuario)
-        boton_agregar.pack(pady=10)
-
-        
+        boton_agregar.pack(pady=10)    
     def usuaris_frame_user_delete_button_event(self):
         top = customtkinter.CTkToplevel(self)
-        top.title("Eliminar usuario")
-        top.geometry("250x150")
+        top.title("Eliminar usuari")
+        top.geometry("300x150")
         top.iconbitmap('img/dele.ico')
 
         def eliminar_usuario():
@@ -439,6 +442,15 @@ class App(customtkinter.CTk):
         boton_eliminar = customtkinter.CTkButton(top, text="Eliminar", command=eliminar_usuario)
         boton_eliminar.pack(pady=10)
 
+
+    # Funciones de carga y guardado de datos
+    def cargar_prestamos(self):
+        if not os.path.exists("data/prestamos.json"):
+            return
+        with open ("data/prestamos.json", "r", encoding="utf-8") as prestamoFile:
+            prestamos = json.load(prestamoFile)
+        return prestamos
+    
     def cargar_usuarios(self):
         if not os.path.exists("data/usuarios.json"):
             return
