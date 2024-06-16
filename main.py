@@ -152,7 +152,7 @@ class App(customtkinter.CTk):
         else:
             self.usuaris_frame.grid_forget()
     
-    # Aqu van las funciones de los botones
+    # Aqui van las funciones de los botones
     def prestecs_button_event(self):
         self.select_frame_by_name("prestecs")
 
@@ -294,6 +294,7 @@ class App(customtkinter.CTk):
             self.materiales.append(nuevo_material)
             # guardar_usuarios(self.usuarios)
             messagebox.showinfo("Éxito", "Material agregado con éxito.")
+            self.guardar_materiales()
             top.destroy()
 
         tipo_entry = customtkinter.CTkEntry(top, placeholder_text="Tipo")
@@ -324,6 +325,7 @@ class App(customtkinter.CTk):
             self.materiales.remove(material)
             # guardar_usuarios(self.usuarios)
             messagebox.showinfo("Éxito", "Material eliminado con éxito.")
+            self.guardar_materiales()
             top.destroy()
 
         ID_entry = customtkinter.CTkEntry(top, placeholder_text="ID")
@@ -394,6 +396,7 @@ class App(customtkinter.CTk):
             self.usuarios.append(nuevo_usuario)
             # guardar_usuarios(self.usuarios)
             messagebox.showinfo("Éxito", "Usuario agregado con éxito.")
+            self.guardar_usuarios()
             top.destroy()
 
         nombre_entry = customtkinter.CTkEntry(top, placeholder_text="Nombre")
@@ -427,6 +430,7 @@ class App(customtkinter.CTk):
             self.usuarios.remove(usuario)
             # guardar_usuarios(self.usuarios)
             messagebox.showinfo("Éxito", "Usuario eliminado con éxito.")
+            self.guardar_usuarios()
             top.destroy()
 
         dni_entry = customtkinter.CTkEntry(top, placeholder_text="DNI")
@@ -448,6 +452,10 @@ class App(customtkinter.CTk):
                 return True, usuario
         return False, None
     
+    def guardar_usuarios(self):
+        with open("data/usuarios.json", "w", encoding="utf-8") as userFile:
+            json.dump(self.usuarios, userFile, indent=4)
+    
     def cargar_materiales(self):
         if not os.path.exists("data/materiales.json"):
             return
@@ -461,6 +469,10 @@ class App(customtkinter.CTk):
                 return True, material
         return False, None
 
+    def guardar_materiales(self):
+        with open("data/materiales.json", "w", encoding="utf-8") as materialFile:
+            json.dump(self.materiales, materialFile, indent=4)
+    
 if __name__ == "__main__":
     app = App()
     app.mainloop()
