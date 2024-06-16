@@ -24,7 +24,7 @@ class App(customtkinter.CTk):
 
         # Cargamos los datos
         self.usuarios = self.cargar_usuarios()
-        self.materiales = {}
+        self.materiales = self.cargar_materiales()
         self.prestecs = {}
 
         # Creamos un grid 1x2
@@ -237,11 +237,100 @@ class App(customtkinter.CTk):
 
     # Botones de materiales
     def materials_frame_material_list_button_event(self):
-        print ("Lista de materiales")
+        # Crear una nueva ventana Toplevel
+        top = customtkinter.CTkToplevel(self)
+        top.title("Llista de Materials")
+        top.geometry("800x600")
+        top.iconbitmap('img/dele.ico')
+
+        # Crear un frame de CustomTkinter dentro del Toplevel
+        frame = customtkinter.CTkFrame(top, corner_radius=10)
+        frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        # Crear un Treeview dentro del frame
+        treeview = ttk.Treeview(frame, columns=("Tipo", "ID", "Estado", "Disponibilidad"), show="headings", height=10)
+        treeview.pack(pady=20, padx=20, fill="both", expand=True)
+
+        # Definir los encabezados de columna
+        treeview.heading("Tipo", text="Tipo")
+        treeview.heading("ID", text="ID")
+        treeview.heading("Estado", text="Estado")
+        treeview.heading("Disponibilidad", text="Disponibilidad")
+
+        # Definir el tamaño de las columnas/
+        treeview.column("Tipo", width=150)
+        treeview.column("ID", width=150)
+        treeview.column("Estado", width=100)
+        treeview.column("Disponibilidad", width=200)
+
+        # Agregar los datos de los usuarios al Treeview
+        for material in self.materiales:
+            treeview.insert("", tk.END, values=(material["Tipo"], material["ID"], material["Estado"], material["Disponibilidad"]))
+      
     def materials_frame_material_new_button_event(self):
-        print ("Nuevo material")
+        top = customtkinter.CTkToplevel(self)
+        top.title("Nuevo material")
+        top.geometry("250x300")
+        top.iconbitmap('img/dele.ico')
+
+        def agregar_material():
+            tipo = tipo_entry.get()
+            ID = ID_entry.get()
+            estado = estado_entry.get()
+            disponibilidad = disponibilidad_entry.get()
+
+            trobat, _ = self.buscar_material_por_id(ID)
+            if trobat:
+                messagebox.showerror("Error", "Ya existe ese ID de material.")
+                return
+
+            nuevo_material = {
+                "Tipo": tipo,
+                "ID": ID,
+                "Estado": estado,
+                "Disponibilidad": disponibilidad,
+            }
+            
+            self.materiales.append(nuevo_material)
+            # guardar_usuarios(self.usuarios)
+            messagebox.showinfo("Éxito", "Material agregado con éxito.")
+            top.destroy()
+
+        tipo_entry = customtkinter.CTkEntry(top, placeholder_text="Tipo")
+        tipo_entry.pack(pady=10)
+        ID_entry = customtkinter.CTkEntry(top, placeholder_text="ID")
+        ID_entry.pack(pady=10)
+        estado_entry = customtkinter.CTkEntry(top, placeholder_text="Estado")
+        estado_entry.pack(pady=10)
+        disponibilidad_entry = customtkinter.CTkEntry(top, placeholder_text="Disponibilidad")
+        disponibilidad_entry.pack(pady=10)
+
+        boton_agregar = customtkinter.CTkButton(top, text="Enviar", command=agregar_material)
+        boton_agregar.pack(pady=10)
+        
     def materials_frame_material_delete_button_event(self):
-        print ("Eliminar material")
+        top = customtkinter.CTkToplevel(self)
+        top.title("Eliminar material")
+        top.geometry("250x150")
+        top.iconbitmap('img/dele.ico')
+
+        def eliminar_material():
+            ID = ID_entry.get()
+            trobat, material = self.buscar_material_por_id(ID)
+            if not trobat:
+                messagebox.showerror("Error", "El material no existe.")
+                return
+
+            self.materiales.remove(material)
+            # guardar_usuarios(self.usuarios)
+            messagebox.showinfo("Éxito", "Material eliminado con éxito.")
+            top.destroy()
+
+        ID_entry = customtkinter.CTkEntry(top, placeholder_text="ID")
+        ID_entry.pack(pady=10)
+
+        boton_eliminar = customtkinter.CTkButton(top, text="Eliminar", command=eliminar_material)
+        boton_eliminar.pack(pady=10)
 
     # Botones de usuarios
     def usuaris_frame_user_list_button_event(self):
@@ -349,14 +438,27 @@ class App(customtkinter.CTk):
     def cargar_usuarios(self):
         if not os.path.exists("data/usuarios.json"):
             return
-        with open ("data/usuarios.json", "r", encoding="utf-8") as file:
-            usuarios = json.load(file)
+        with open ("data/usuarios.json", "r", encoding="utf-8") as userFile:
+            usuarios = json.load(userFile)
         return usuarios 
     
     def buscar_usuario_por_dni(self, dni):
         for usuario in self.usuarios:
             if usuario["DNI"] == dni:
                 return True, usuario
+        return False, None
+    
+    def cargar_materiales(self):
+        if not os.path.exists("data/materiales.json"):
+            return
+        with open ("data/materiales.json", "r", encoding="utf-8") as materialFile:
+            materiales = json.load(materialFile)
+        return materiales
+    
+    def buscar_material_por_id(self, id):
+        for material in self.materiales:
+            if material["ID"] == id:
+                return True, material
         return False, None
 
 if __name__ == "__main__":
