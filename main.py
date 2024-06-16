@@ -5,7 +5,7 @@ import os
 from PIL import Image
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Tema y colores
 
@@ -205,41 +205,101 @@ class App(customtkinter.CTk):
         # Agregar algunos datos
         
         for item in self.prestecs:
-            treeview.insert("", tk.END, values=(item["Data Prestec"], item["Data Retornament"], item["Nom"], item["Cognom"], item["DNI"], item["Correu Electrònic"], item["Telefon"], item["Tipo"], item["ID"], item["Estado"]))
+            treeview.insert("", tk.END, values=(item["Data Prestec"], item["Data Retornament"], item["Nom"], item["Cognom"], item["DNI"], item["Correu"], item["Telefon"], item["Tipo"], item["ID"], item["Estado"]))
 
-    def prestecs_frame_retornament_button_event(slef):
-        dialog = customtkinter.CTkInputDialog(text="Introdueix ID del material a retornar", title="Retornament de material")
+    def prestecs_frame_retornament_button_event(self):
+        top = customtkinter.CTkToplevel(self)
+        top.title("Retornament")
+        top.geometry("300x150")
+        top.iconbitmap('img/dele.ico')
+
+        def retornar():
+            ID = ID_entry.get()
+            trobat, prestec = self.buscar_prestamo_por_id(ID)
+            if not trobat:
+                messagebox.showerror("Error", f"No existeix cap préstec per al material amb l'ID '{ID}'.")
+                return
+
+            self.prestecs.remove(prestec)
+            messagebox.showinfo("Éxito", f"Préstec del material amb l'ID '{ID}' retornat correctament.")
+            self.guardar_prestamos()
+            top.destroy()
+        
+        ID_entry = customtkinter.CTkEntry(top, placeholder_text="ID")
+        ID_entry.pack(pady=10)
+
+        retornar_button = customtkinter.CTkButton(top, text="Retornar", command=retornar)
+        retornar_button.pack(pady=10)
     
     def prestecs_frame_prestec_button_event(self):
         finestra_prestec = customtkinter.CTkToplevel(self)
-        finestra_prestec.title("Nou Prestec")
+        finestra_prestec.title("Nou Préstec")
         finestra_prestec.geometry("300x200")
         finestra_prestec.resizable(False, False) # Width, Height
-        
+
         def tancar():
             finestra_prestec.destroy()
             finestra_prestec.update()
-        
+
         def enviar():
             dni = dni_entrada.get()
-            if dni not in self.usuarios:
-                messagebox.showerror("Error", "El usuario no existe.")
+            material_id = material_entrada.get()
+            estat = estado_entrada.get()
+
+            # Comprobar si el usuario existe
+            usuario = next((u for u in self.usuarios if u['DNI'] == dni), None)
+            if usuario is None:
+                messagebox.showerror("Error", "L'usuari no existeix.")
                 return
-            if not any(self.materiales.values()):
-                messagebox.showerror("Error", "No hay materiales disponibles.")
+
+            # Comprobar si el material existe
+            material = next((m for m in self.materiales if m['ID'] == material_id), None)
+            if material is None:
+                messagebox.showerror("Error", "El material no existeix.")
                 return
-            material = next(material for material, disponible in self.materiales.items() if disponible)
-            self.materiales[material] = False
-            self.prestamos.append({"dni": dni, "material": material, "fecha": datetime.now().isoformat()})
-            messagebox.showinfo("Éxito", "Préstamo realizado con éxito.")
-            tancar()
+
+            # Comprobar si el material ya está prestado
+            prestamo_existente = next((p for p in self.prestecs if p['ID'] == material_id), None)
+            if prestamo_existente is not None:
+                messagebox.showerror("Error", "El material ja està prestat.")
+                return
+
+            # Añadir el nuevo préstamo
+            hoy = datetime.now()
+            data_prestec = hoy.strftime("%Y-%m-%d")
+            data_retornament = (hoy + timedelta(weeks=1)).strftime("%Y-%m-%d")
         
+            nuevo_prestamo = {
+                "Data Prestec": data_prestec,
+                "Data Retornament": data_retornament,
+                "Nom": usuario["Nombre"],
+                "Cognom": usuario["Apellido"],
+                "DNI": usuario["DNI"],
+                "Correu": usuario["Correo"],
+                "Telefon": usuario["Telefono"],
+                "Tipo": material["Tipo"],
+                "ID": material["ID"],
+                "Estado": estat
+            }
+
+            self.prestecs.append(nuevo_prestamo)
+            messagebox.showinfo("Èxit", "Préstec realitzat amb èxit.")
+            # Actualitzar les dades guardades
+            self.guardar_prestamos()
+            tancar()
+
         dni_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="DNI")
         dni_entrada.pack(pady=10)
-        dni_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="IdMaterial")
-        dni_entrada.pack(pady=10) 
+    
+        material_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="ID del material")
+        material_entrada.pack(pady=10) 
+
+        estado_entrada = customtkinter.CTkEntry(finestra_prestec, placeholder_text="Estat")
+        estado_entrada.pack(pady=10)
+
         okay_button = customtkinter.CTkButton(finestra_prestec, text="OK", command=enviar)
         okay_button.pack(pady=10)
+    
         tancar_button = customtkinter.CTkButton(finestra_prestec, text="Tancar", command=tancar)
         tancar_button.pack(pady=10)
 
@@ -273,7 +333,13 @@ class App(customtkinter.CTk):
 
         # Agregar los datos de los usuarios al Treeview
         for material in self.materiales:
-            treeview.insert("", tk.END, values=(material["Tipo"], material["ID"], material["Estado"], material["Disponibilidad"]))
+            disponibilidad, prestamo = self.buscar_prestamo_por_id(material["ID"])
+            if disponibilidad:
+                disponibilidad = "No disponible"
+            else:
+                disponibilidad = "Disponible"
+                
+            treeview.insert("", tk.END, values=(material["Tipo"], material["ID"], material["Estado"], disponibilidad))
     def materials_frame_material_new_button_event(self):
         top = customtkinter.CTkToplevel(self)
         top.title("Nuevo material")
@@ -450,6 +516,16 @@ class App(customtkinter.CTk):
         with open ("data/prestamos.json", "r", encoding="utf-8") as prestamoFile:
             prestamos = json.load(prestamoFile)
         return prestamos
+    
+    def buscar_prestamo_por_id(self, material_id):
+        for prestamo in self.prestecs:
+            if prestamo["ID"] == material_id:
+                return True, prestamo
+        return False, None
+
+    def guardar_prestamos(self):
+        with open("data/prestamos.json", "w", encoding="utf-8") as prestamoFile:
+            json.dump(self.prestecs, prestamoFile, indent=4)
     
     def cargar_usuarios(self):
         if not os.path.exists("data/usuarios.json"):
